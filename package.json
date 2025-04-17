@@ -24,8 +24,8 @@
     "node-schedule": "^2.1.0",
     "node-webpmux": "^3.1.0",
     "pg": "^8.8.0",
-    "pino": "^8.1.0",
-    "pm2": "^5.2.0",
+    "pino": "^7.0.5",
+    "pm2": "^6.0.5",
     "archiver": "^5.3.1",
     "bitly": "^7.1.2",
     "jimp": "^0.16.1",
@@ -53,7 +53,7 @@
     "dotenv": "^16.4.7",
     "google-tts-api": "^2.0.2",
     "path": "^0.12.7",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.6.1",
     "btch-downloader": "^2.2.9",
     "megajs": "^1.1.0",
     "wa_set_pkg": "1.0.5",
@@ -78,13 +78,5 @@
     "@mrnima/tiktok-downloader":"1.0.0",
     "@mrnima/facebook-downloader":"1.0.0",
     "mrnima-moviedl":"1.0.0"
-  },
-  "_moduleAliases": {
-    "@lib": "./lib",
-    "@ai": "./lib/functions/ai.js",
-    "@search": "./lib/functions/search.js",
-    "@anime": "./lib/functions/anime.js",
-    "@start": "./lib/haki.js",
-    "@config": "./config.js"
   }
 }
