@@ -27,6 +27,54 @@ reply(`❌ *Error Accurated !!*\n\n${e}`)
 }
 } )
 
+cmd({
+    pattern: "tagadmins",
+    react: "👑",
+    alias: ["admin" ,"admin","tagadmin"],
+    desc: "To Tag all Admins of the Group",
+    category: "group",
+    use: '.tagadmins [message]',
+    filename: __filename
+},
+async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAdmins, prefix, command, args, body }) => {
+    try {
+        if (!isGroup) return reply("❌ This command can only be used in groups.");
+        
+        const botOwner = conn.user.id.split(":")[0]; // Extract bot owner's number
+        const senderJid = senderNumber + "@s.whatsapp.net";
+
+        // Ensure group metadata is fetched properly
+        let groupInfo = await conn.groupMetadata(from).catch(() => null);
+        if (!groupInfo) return reply("❌ Failed to fetch group information.");
+
+        let groupName = groupInfo.subject || "Unknown Group";
+        let admins = await getGroupAdmins(participants);
+        let totalAdmins = admins ? admins.length : 0;
+        if (totalAdmins === 0) return reply("❌ No admins found in this group.");
+
+        let emojis = ['⚡', '✨', '🎖️', '💎', '🔱', '💗',  '❤‍🩹', '👻', '🌟', '🪄', '🎋', '🪼', '🍿', '👀', '👑', '🦋', '🐋', '🌻', '🌸', '🔥', '🍉', '🍧', '🍨', '🍦', '🧃', '🪀', '🎾', '🪇', '🎲', '🎡', '🧸', '🎀', '🎈', '🩵', '♥️', '🚩' , '🏳️‍🌈', '🔪', '🎏', '🫐', '🍓', '🍇', '🐍', '🪻', '🪸', '💀'];
+        let randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+        // Proper message extraction
+        let message = body.slice(body.indexOf(command) + command.length).trim();
+        if (!message) message = "ATTENTION ADMINS"; // Default message
+
+        let teks = `*▢ GROUP : ${groupName}*\n*▢ ADMINS : ${totalAdmins}*\n*▢ MESSAGE: ${message}*\n\n‎*╭───❍「 ADMINS MENTION 」❍*\n`;
+
+        for (let admin of admins) {
+            if (!admin) continue; // Prevent undefined errors
+            teks += `*│${randomEmoji} ᩧ𝆺ྀི𝅥* @${admin.split('@')[0]}\n`;
+        }
+
+       // teks += "└──✪ ALI ┃ MD ✪──";
+
+        conn.sendMessage(from, { text: teks, mentions: admins }, { quoted: mek });
+
+    } catch (e) {
+        console.error("TagAdmins Error:", e);
+        reply(`❌ *Error Occurred !!*\n\n${e.message || e}`);
+    }
+});
 
 cmd({
     pattern: "invite",
@@ -189,32 +237,6 @@ cmd({
     }
 });
 
-cmd({
-    pattern: "hidetag",
-    react: "🔊",
-    desc: "To Tag all Members for Message",
-    category: "group",
-    use: '.tag Hi',
-    filename: __filename
-},
-async(conn, mek, m,{from, l, quoted, body, isCmd, command, mentionByTag , args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isCreator ,isDev, isAdmins, reply}) => {
-try{
-const msr = (await fetchJson('https://raw.githubusercontent.com/JawadYTX/KHAN-DATA/refs/heads/main/MSG/mreply.json')).replyMsg
-
-if (!isGroup) return reply(msr.only_gp)
-if (!isAdmins) { if (!isDev) return reply(msr.you_adm),{quoted:mek }} 
-if (!isBotAdmins) return reply(msr.give_adm)
-	
-		if(!q) return reply('*Please add a Message* ℹ️')
-		let teks = `${q}`
-                conn.sendMessage(from, { text: teks, mentions: participants.map(a => a.id) }, { quoted: mek })
-                
-} catch (e) {
-await conn.sendMessage(from, { react: { text: '❌', key: mek.key } })
-console.log(e)
-reply(`❌ *Error Accurated !!*\n\n${e}`)
-}
-} )
 
 cmd({
     pattern: "taggp",
@@ -241,7 +263,7 @@ reply(`❌ *Error Accurated !!*\n\n${e}`)
 } )
 
 cmd({
-    pattern: "ginfo",
+    pattern: "gginfo",
     desc: "Get group information.",
     category: "group",
     filename: __filename,
@@ -312,22 +334,22 @@ cmd({
 
 cmd({
     pattern: "tagall",
-    react: "🔊",
+    react: "📑",
     alias: ["gc_tagall"],
     desc: "To Tag all Members",
     category: "group",
-    use: '.tagall',
+    use: '.tagall [message]',
     filename: __filename
 },
-async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAdmins, prefix, command }) => {
+async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAdmins, prefix, command, args, body }) => {
     try {
-        if (!isGroup) return reply("❌ This command can only be used in groups.");
+        if (!isGroup) return reply("*📛 ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ ᴄᴀɴ ᴏɴʟʏ ʙᴇ ᴜsᴇᴅ ɪɴ ɢʀᴏᴜᴘs.*");
         
         const botOwner = conn.user.id.split(":")[0]; // Extract bot owner's number
         const senderJid = senderNumber + "@s.whatsapp.net";
 
         if (!groupAdmins.includes(senderJid) && senderNumber !== botOwner) {
-            return reply("*📛 σɴℓу gʀσυρ α∂мιɴѕ σʀ тнє вσт σωɴєʀ ᴄαɴ ᴜѕє тнιѕ ᴄσммαɴ∂.*");
+            return reply("*📛 σɴℓʏ gʀσᴜᴘ α∂мιɴs σʀ тнє σωɴєʀ ᴄαɴ ᴜsє тнιѕ ᴄσммαɴ∂.*");
         }
 
         // Ensure group metadata is fetched properly
@@ -338,20 +360,19 @@ async (conn, mek, m, { from, participants, reply, isGroup, senderNumber, groupAd
         let totalMembers = participants ? participants.length : 0;
         if (totalMembers === 0) return reply("❌ No members found in this group.");
 
-        let emojis = ['🍇', '🌻', '🎗️', '🔮', '❤‍🩹', '🦋', '☃️', '🩵', '📝', '💗', '🔖', '🪩', '📦', '🌸', '🛡️', '💸', '🐍', '🗿', '🚀', '🎧', '🪀', '⚡', '🚩', '🍁', '🗣️', '👻', '⚠️', '🔥'];
+        let emojis = ['⚡', '✨', '🎖️', '💎', '🔱', '💗',  '❤‍🩹', '👻', '🌟', '🪄', '🎋', '🪼', '🍿', '👀', '👑', '🦋', '🐋', '🌻', '🌸', '🔥', '🍉', '🍧', '🍨', '🍦', '🧃', '🪀', '🎾', '🪇', '🎲', '🎡', '🧸', '🎀', '🎈', '🩵', '♥️', '🚩' , '🏳️‍🌈', '🔪', '🎏', '🫐', '🍓', '🍇', '🐍', '🪻', '🪸', '💀'];
         let randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
-        // Ensure message is properly extracted
-        let message = (m.body || "").slice((prefix + command).length).trim();
-        if (!message) message = "ATTENTION EVERYONE!"; // Default message
+        // Proper message extraction
+        let message = body.slice(body.indexOf(command) + command.length).trim();
+        if (!message) message = "ATTENTION EVERYONE"; // Default message
 
-        let teks = `*▢ GROUP : ${groupName}*\n*▢ MEMBERS : ${totalMembers}*\n*▢ MESSAGE : ${message}*\n\n┌───❒ *MENTIONS*\n`;
+        let teks = `*▢ GROUP : ${groupName}*\n*▢ MEMBERS : ${totalMembers}*\n*▢ MESSAGE : ${message}*\n\n*╭┈─「 \`𓆩ု᪳𝐌𝐄𝐍𝐓𝐈𝐎𝐍𝐒ှ᪳𓆪\` 」┈❍*\n`;
 
         for (let mem of participants) {
             if (!mem.id) continue; // Prevent undefined errors
-            teks += `${randomEmoji}🪾͎᪳᪳𝆺ྀི𝅥 @${mem.id.split('@')[0]}\n`;
-        }
-
+            teks += `*│${randomEmoji} ᩧ𝆺ྀི𝅥* @${mem.id.split('@')[0]}\n`;
+	}
 
         conn.sendMessage(from, { text: teks, mentions: participants.map(a => a.id) }, { quoted: mek });
 
@@ -451,38 +472,6 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, args, q, reply }) =
     }
 });
 
-cmd({
-    pattern: "leave",
-    alias: ["left", "leftgc", "leavegc"],
-    desc: "Leave the group",
-    react: "🎉",
-    category: "owner",
-    filename: __filename
-},
-async (conn, mek, m, {
-    from, quoted, body, isCmd, command, args, q, isGroup, senderNumber, reply
-}) => {
-    try {
-
-        if (!isGroup) {
-            return reply("This command can only be used in groups.");
-        }
-        
-
-        const botOwner = conn.user.id.split(":")[0]; 
-        if (senderNumber !== botOwner) {
-            return reply("*📛 Only the bot owner can use this command.*");
-        }
-
-        reply("*Leaving group...*");
-        await sleep(1500);
-        await conn.groupLeave(from);
-        reply("*Goodbye! 👋*");
-    } catch (e) {
-        console.error(e);
-        reply(`❌ Error: ${e}`);
-    }
-});
 
 cmd({
     pattern: "lockgc",
@@ -571,30 +560,3 @@ async (conn, mek, m, { from, isGroup, isAdmins, isBotAdmins, reply }) => {
         reply("❌ Failed to unlock the group. Please try again.");
     }
 });
-
-cmd({
-    pattern: "tag",
-    react: "🔊",
-    desc: "To tag all members with a message",
-    category: "group",
-    use: '.tag Hi',
-    filename: __filename
-}, async (conn, mek, m, { from, senderNumber, participants, q, reply }) => {
-    try {
-        // Get the bot owner's number dynamically from conn.user.id
-        const botOwner = conn.user.id.split(":")[0]; // Extract the bot owner's number
-        if (senderNumber !== botOwner) {
-            return reply("*📛 Only the bot owner can use this command.*");
-        }
-
-        if (!q) return reply('*Please provide a message to send.* ℹ️');
-
-        conn.sendMessage(from, { text: q, mentions: participants.map(a => a.id), linkPreview: true }, { quoted: mek });
-
-    } catch (e) {
-        await conn.sendMessage(from, { react: { text: '❌', key: mek.key } });
-        console.log(e);
-        reply(`❌ *Error Occurred !!*\n\n${e}`);
-    }
-});
-			       

@@ -13,6 +13,13 @@
       "value": ""
     },  
     
+    "ANTI_CALL": {
+       "description": "Make it true if you want bot auto call rejected.",
+       "required": false,
+       "value": "true"
+       
+     }, 
+    
     "STICKER_NAME": {
       "description": "type your sticker pack name.",
       "required": false,
@@ -31,8 +38,7 @@
       "value": "private"
       
     },
-    
-    
+        
     "ALWAYS_ONLINE": {
       "description": "Make it true if want always online.",
       "required": false,
@@ -62,6 +68,12 @@
       "description": "Make it true for automatic status seen.",
       "required": true,
       "value": "true"
+    }, 
+    
+       "MENTION_REPLY": {
+      "description": "make it true if want mention reply if someone menetion you.",
+      "required": false,
+      "value": "false"
     }, 
 
     "AUTO_STATUS_REACT": {
@@ -97,13 +109,13 @@
       },
 
     "DELETE_LINK": {
-      "description": "Make it true if you want bot auto remove group link.",
+      "description": "Make it true if you want bot auto delete group link.",
       "required": false,
       "value": "false"
     }, 
     
     "ANTI_LINK": {
-      "description": "Make it true if you want bot auto remove group link.",
+      "description": "Make it true if you want bot auto wearing group link.",
       "required": false,
       "value": "false"
     }, 
@@ -146,7 +158,7 @@
     }, 
     
     "ANTI_DEL_PATH": {
-      "description": "change it to -same- if you want to resend deleted message in same chat",
+      "description": "if you want true make it your bot number .antidelete on",
       "required": false,
       "value": "log"
     }, 

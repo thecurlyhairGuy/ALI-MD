@@ -3,17 +3,87 @@
 //---------------------------------------------------------------------------
 //  ⚠️ DO NOT MODIFY THIS FILE ⚠️  
 //---------------------------------------------------------------------------
-const { cmd, commands } = require('../command');
-const config = require('../config');
-const prefix = config.PREFIX;
-const fs = require('fs');
-const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, sleep, fetchJson } = require('../lib/functions2');
-const { writeFileSync } = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
+const config = require("../config");
+const { cmd, commands } = require("../command");
 
 let antilinkAction = "off"; // Default state
 let warnCount = {}; // Track warnings per user
 
+cmd({ 
+  pattern: "setprefix", 
+  alias: ["prefix"], 
+  desc: "Change bot prefix.", 
+  category: "settings", 
+  filename: __filename 
+}, async (conn, mek, m, { 
+  from, 
+  args, 
+  isOwner, 
+  reply 
+}) => { 
+  if (!isOwner) return reply("*📛 Only the owner can use this command!*"); 
+  if (!args[0]) return reply("❌ Please provide a new prefix."); 
+  const newPrefix = args[0]; 
+  config.PREFIX = newPrefix; 
+  // Save config to file 
+  fs.writeFileSync('./config.json', JSON.stringify(config, null, 2)); 
+  reply(`*Prefix changed to:* ${newPrefix}`); 
+  const { exec } = require("child_process"); 
+  reply("*_successfully set_*"); 
+  await sleep(1500); 
+  exec("pm2 restart all"); 
+  reply("*_ALI-MD STARTED NOW...🚀_*"); 
+});
+
+//========mode
+cmd({
+     pattern: "mention-reply",
+     alias: ["menetionreply", "mee"],
+     description: "Set bot status to always online or offline.",
+     category: "settings",
+     filename: __filename
+ },    
+ async (conn, mek, m, { from, args, isOwner, reply }) => {
+     if (!isOwner) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+ 
+     const status = args[0]?.toLowerCase();
+     // Check the argument for enabling or disabling the anticall feature
+     if (args[0] === "on") {
+         config.MENTION_REPLY = "true";
+         return reply("Mention Reply feature is now enabled.");
+     } else if (args[0] === "off") {
+         config.MENTION_REPLY = "false";
+         return reply("Mention Reply feature is now disabled.");
+     } else {
+         return reply(`_example:  .mee on_`);
+     }
+ });
+ 
+ cmd({
+     pattern: "auto-voice",
+     alias: ["autovoice"],
+     description: "Set bot status to always online or offline.",
+     category: "settings",
+     filename: __filename
+ },    
+ async (conn, mek, m, { from, args, isOwner, reply }) => {
+     if (!isOwner) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+ 
+     const status = args[0]?.toLowerCase();
+     // Check the argument for enabling or disabling the anticall feature
+     if (args[0] === "on") {
+         config.AUTO_VOICE = "true";
+         return reply("*auto-voice feature is now enabled.*");
+     } else if (args[0] === "off") {
+         config.AUTO_VOICE = "false";
+         return reply("*auto-voice feature is now disabled.*");
+     } else {
+         return reply(`_example:  .auto-voice on_`);
+     }
+ });
+ 
 cmd({
     pattern: "mode",
     desc: "Set bot mode to private or public.",
@@ -31,14 +101,20 @@ cmd({
 
     if (modeArg === "private") {
         config.MODE = "private";
-        return reply("✅ Bot mode is now set to *PRIVATE*.");
+        return reply("*_BOT MODE IS NOW SET TO PRIVATE ✅_*.");
     } else if (modeArg === "public") {
         config.MODE = "public";
-        return reply("✅ Bot mode is now set to *PUBLIC*.");
+        return reply("*_BOT MODE IS NOW SET TO PUBLIC ✅_*.")
+        const {exec} = require("child_process")
+reply("*_RESTARTING NOW...🚀_*")
+await sleep(1500)
+exec("pm2 restart all")
+reply("*_ALI-MD STARTED NOW...🚀_*");
     } else {
         return reply("❌ Invalid mode. Please use `.mode private` or `.mode public`.");
     }
 });
+
 cmd({
     pattern: "auto-typing",
     alias: ["autotyping"],
@@ -169,10 +245,10 @@ async (conn, mek, m, { from, args, isOwner, reply }) => {
     const status = args[0]?.toLowerCase();
     // Default value for AUTO_LIKE_STATUS is "false"
     if (args[0] === "on") {
-        config.ANTICALL = "true";
+        config.ANTI_CALL = "true";
         return reply("anti-call of statuses is now enabled.");
     } else if (args[0] === "off") {
-        config.ANTICALL = "false";
+        config.ANTI_CALL = "false";
         return reply("anti-call of statuses is now disabled.");
     } else {
         return reply(`Example: .anti-call on`);
@@ -194,10 +270,10 @@ async (conn, mek, m, { from, args, isOwner, reply }) => {
     const status = args[0]?.toLowerCase();
     // Check the argument for enabling or disabling the anticall feature
     if (args[0] === "on") {
-        config.AUTO_STICKER = "true";
+        config.READ_MESSAGE = "true";
         return reply("readmessage feature is now enabled.");
     } else if (args[0] === "off") {
-        config.AUTO_STICKER = "false";
+        config.READ_MESSAGE = "false";
         return reply("readmessage feature is now disabled.");
     } else {
         return reply(`_example:  .readmessage on_`);
@@ -245,7 +321,7 @@ async (conn, mek, m, { from, args, isOwner, reply }) => {
     // Check the argument for enabling or disabling the anticall feature
     if (args[0] === "on") {
         config.AUTO_STICKER = "true";
-        return reply("auto-sticker feature is now enabled.");
+        
     } else if (args[0] === "off") {
         config.AUTO_STICKER = "false";
         return reply("auto-sticker feature is now disabled.");
@@ -296,7 +372,7 @@ async (conn, mek, m, { from, args, isOwner, reply }) => {
     // Check the argument for enabling or disabling the anticall feature
     if (args[0] === "on") {
         config.AUTO_REACT = "true";
-        await reply("*autoreact feature is now enabled.*");
+        
     } else if (args[0] === "off") {
         config.AUTO_REACT = "false";
         await reply("autoreact feature is now disabled.");
@@ -333,8 +409,8 @@ async (conn, mek, m, { from, args, isOwner, reply }) => {
 //  ANTILINK1 COMMANDS
 //--------------------------------------------
 cmd({
-  pattern: "anti-link-kick",
-  alias: ["antilinkkick"],
+  pattern: "delete-link",
+  alias: ["deletelink"],
   desc: "Enable or disable anti-link feature in groups",
   category: "group",
   react: "🚫",
@@ -343,15 +419,15 @@ cmd({
   try {
     // Check for group, bot admin, and user admin permissions
     if (!isGroup) return reply('This command can only be used in a group.');
-    if (!isBotAdmins) return reply('Bot must be an admin to use this command.');
-    if (!isAdmins) return reply('You must be an admin to use this command.');
+    if (!isBotAdmins) return reply('*📛 ι ɴєє∂ тσ вє αɴ α∂мιɴ тσ ᴜѕє тнιѕ ᴄσммαɴ∂.*');
+    if (!isAdmins) return reply('*📛 σɴℓʏ gʀσᴜᴘ α∂мιɴs σʀ тнє σωɴєʀ ᴄαɴ ᴜsє тнιѕ ᴄσммαɴ∂.*');
 
     // Enable or disable anti-link feature
     if (args[0] === "on") {
-      config.ANTI_LINK_KICK = "true";
+      config.DELETE_LINK = "true";
       await reply("Anti-link feature is now enabled in this group.");
     } else if (args[0] === "off") {
-      config.ANTI_LINK_KICK = "false";
+      config.DELETE_LINK = "false";
       await reply("Anti-link feature is now disabled in this group.");
     } else {
       await reply(`*Invalid input! Use either 'on' or 'off'. Example:antilinkkick on*`);
@@ -491,15 +567,15 @@ cmd({
   try {
     // Check for group, bot admin, and user admin permissions
     if (!isGroup) return reply('This command can only be used in a group.');
-    if (!isBotAdmins) return reply('Bot must be an admin to use this command.');
-    if (!isAdmins) return reply('You must be an admin to use this command.');
+    if (!isBotAdmins) return reply('*📛 ι ɴєє∂ тσ вє αɴ α∂мιɴ тσ ᴜѕє тнιѕ ᴄσммαɴ∂.*');
+    if (!isAdmins) return reply('*📛 σɴℓʏ gʀσᴜᴘ α∂мιɴs σʀ тнє σωɴєʀ ᴄαɴ ᴜsє тнιѕ ᴄσммαɴ∂.*');
 
     // Enable or disable anti-link feature
     if (args[0] === "on") {
-      config.DELETE_LINK = "true";
+      config.ANTI_LINK = "true";
       await reply("Anti-link feature is now enabled in this group.");
     } else if (args[0] === "off") {
-      config.DELETE_LINK = "false";
+      config.ANTI_LINK = "false";
       await reply("Anti-link feature is now disabled in this group.");
     } else {
       await reply(`*Invalid input! Use either 'on' or 'off'. Example:antilink on*`);
